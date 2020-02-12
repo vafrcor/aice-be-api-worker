@@ -1,0 +1,8 @@
+{
+	"mqtt":{
+		"host": "3.17.58.169",
+     	"port": 15675,
+      	"uri_segment_prefix": "/ws",
+      	"identity_format": "be_{random}"
+	}
+}

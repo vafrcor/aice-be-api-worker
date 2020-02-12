@@ -1,0 +1,43 @@
+{	
+	"schema":{
+		"offices":{
+			"name":"Office"
+		},
+		"toilets":{
+			"name":"Toilet",
+			"topics":{
+				"door_status": "/{office_id}/toilet/{toilet_id}/door-status",
+				"client_refresh": "/{office_id}/toilet/{toilet_id}/door-status/client",
+				"inspect_toilets":"/{office_id}/toilet/#"
+			}
+		}
+	},
+	"objects":{
+		"offices":{
+			"lb":{
+				"name":"Lompobatang",
+				"location":{
+					"city":"Malang",
+					"province":"Jawa Timur",
+					"coordinates":"-7.966934,112.610933"
+				}
+			},
+			"tambora":{
+				"name":"Tambora",
+				"location":{
+					"city":"Malang",
+					"province":"Jawa Timur",
+					"coordinates":"-7.968443,112.610557"
+				}
+			}
+		},
+		"toilets":{
+			"lb": [ 
+				"toilet-tengah",
+				"toilet-kamar",
+				"toilet-mushola",
+				"toilet-atas"
+			]
+		}
+	}
+}

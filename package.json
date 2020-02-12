@@ -5,8 +5,9 @@
   "description": "AICE Backend - NodeJS Service",
   "scripts": {
     "start": "node ./bin/www",
+    "worker": "node ./bin/worker",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run-with-debug": "DEBUG=myapp:* npm start"
+    "run-with-debug": "DEBUG=alterra-aice-be-node:* npm start"
   },
   "repository": {
     "type": "git",
@@ -20,11 +21,14 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/vafrcor/alterra-aice-be-node#readme",
   "dependencies": {
+    "app-root-path": "^3.0.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "dot-prop": "^5.2.0",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "mqtt": "^3.0.0"
   }
 }
