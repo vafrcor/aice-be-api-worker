@@ -4,6 +4,12 @@
 			"name":"Office"
 		},
 		"object_types":{
+			"meta": {
+				"index":{
+					"office_id":0,
+					"object_type_id":1
+				}
+			},
 			"toilet":{
 				"name":"Toilet",
 				"topics":{

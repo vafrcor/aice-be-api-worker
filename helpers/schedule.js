@@ -27,7 +27,7 @@ module.exports= function(options){
 					var e_topic_format= topic_format.replace('{office_id}',ok);
 					self.data.schedules.push(schedule.scheduleJob('* * * * *', function(){
 						if(self.debug){
-							console.log('Schedule (each-minutes) \\ Check MQTT Service (check toilet availability - '+ok+')');
+							console.log('* Schedule (each-minutes) \\ Check MQTT Service (check toilet availability - '+ok+')');
 						}
 					  self.data.mqtt_service.client.publish(e_topic_format, 'getData');
 					}));

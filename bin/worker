@@ -12,12 +12,14 @@ try{
 
 const fs = require('fs');
 const dotProp = require('dot-prop');
+const _= require('lodash');
 
 const objectConfig= require(appRoot+"/helpers/object_config.js");
 let objectJSON= objectConfig.read('/configs/objects.json');
 let database= objectConfig.read('/configs/database.json');
 
 var app_debug= process.env.APP_DEBUG || 'false';
+var app_env= process.env.APP_ENV || 'local';
 
 app_debug = app_debug == 'true'? true : false;
 console.log('APP DEBUG: '+app_debug);
@@ -47,11 +49,11 @@ let schedule_options={
 const schedule_service=require(appRoot+'/helpers/schedule.js')(schedule_options);
 
 //# Test purpose only
-test_signal_toilet_status=process.env.TEST_SIGNAL_TOILET_DOOR_STATUS || 'false';
-if(test_signal_toilet_status == 'true'){
-	setTimeout(function(){
+test_signal_toilet_status=process.env.APP_TEST_SIGNAL_TOILET_DOOR_STATUS || 'false';
+if((test_signal_toilet_status == 'true') && _.includes(['local','development','staging'],app_env)) {
+	setInterval(function(){
 		console.log('Test \\ MQTT Publish: lb/toilet-tengah/door-status');
 		// lorem ipsum dolor sit amet
-		mqtt_service.client.publish('lb/toilet-tengah/door-status', '1');
+		mqtt_service.client.publish('lb/toilet-tengah/door-status', _.random(0,1).toString());
 	}, 5000);
 }
