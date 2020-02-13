@@ -6,6 +6,7 @@
 		"toilets":{
 			"name":"Toilet",
 			"topics":{
+				"get_data": "/{office_id}/#",
 				"door_status": "/{office_id}/toilet/{toilet_id}/door-status",
 				"client_refresh": "/{office_id}/toilet/{toilet_id}/door-status/client",
 				"inspect_toilets":"/{office_id}/toilet/#"

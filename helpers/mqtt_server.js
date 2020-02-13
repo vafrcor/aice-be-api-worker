@@ -27,7 +27,7 @@ var mqtt_service= {
 	},
 	eventOnMessage: (topic, message) => {
 		var self= this;
-		console.log('MQTT \\ Message ('+topic+'): ', message.toString());
+		console.log('MQTT \\ Message Received ('+topic+'): ', message.toString());
 	},
 	eventOnOffline: () => {
 		var self= this;
@@ -46,18 +46,25 @@ var mqtt_service= {
 		console.log("MQTT \\ Connected");
 		// console.log('abc', this);
 
-		mqtt_client.subscribe('lb/toilet-kamar/door-status', (err) => {
+		mqtt_client.subscribe('lb/#', (err) => {
 			if(err){
 		  		console.log('MQTT \\ Subscribe \\ something wrong: ', err);
 			}
 		});
 
-		mqtt_client.publish('lb/toilet-kamar/door-status', 'Current time is: ' + new Date());
+		// mqtt_client.subscribe('lb/toilet-tengah/door-status', (err) => {
+		// 	if(err){
+		//   		console.log('MQTT \\ Subscribe \\ something wrong: ', err);
+		// 	}
+		// });
+
+		// mqtt_client.publish('lb/toilet-kamar/door-status', 'Current time is: ' + new Date());
 	}
 };
 
 module.exports= function(options){
 	mqtt_service.init(options);
 	mqtt_service.setEvents();
+	mqtt_service.client=mqtt_client;
 	return mqtt_service;
 };
