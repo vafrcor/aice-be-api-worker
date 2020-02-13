@@ -1,18 +1,25 @@
-
 const mqtt = require('mqtt');
+const dotProp = require('dot-prop');
+const _ = require('lodash');
+
 var mqtt_client= null;
+var mqtt_service_data= {};
+var mqtt_service_debug= false;
+var mqtt_service_subscriber= null;
 
 var mqtt_service= {
-	// client: null,
 	debug: true,
 	options: {},
 	init: function(options){
 		var self= this;
-		self.options= options;
-		self.debug= options.debug || false; 
+		//console.log('MQTT Service \\ Options: '+JSON.stringify(options));
+		mqtt_service_data= options;
+		mqtt_service_debug= options.debug || false; 
+		//console.log('MQTT Service \\ Debug : ', mqtt_service_debug);
+		mqtt_service_subscriber= options.event_subscriber || null;
 		let connect_url= 'ws://'+options.connection.host+':'+options.connection.port+''+options.connection.uri_segment_prefix;
-		if(self.debug){
-			console.log('MQTT \\ URL: '+connect_url);
+		if(mqtt_service_debug){
+			console.log('* MQTT \\ URL: '+connect_url);
 		}
 		
 		mqtt_client = mqtt.connect(connect_url);
@@ -25,31 +32,59 @@ var mqtt_service= {
 		mqtt_client.on('error', self.eventOnError);
 		mqtt_client.on('connect', self.eventOnConnect);
 	},
-	eventOnMessage: (topic, message) => {
-		var self= this;
-		console.log('MQTT \\ Message Received ('+topic+'): ', message.toString());
+	eventOnMessage: function(topic, message){
+		// var self= this;
+		// if(mqtt_service_debug){
+			console.log('* MQTT \\ Message Received ('+topic+'): ', message.toString());
+		// }
+		mqtt_service_subscriber.processMessage(topic, message);
 	},
-	eventOnOffline: () => {
+	eventOnOffline: function(){
 		var self= this;
-		console.log("MQTT \\ Offline");
+		if(mqtt_service_debug){
+			console.log("* MQTT \\ Offline");
+		}
 	},
-	eventOnDisconnect: (packet) => {
+	eventOnDisconnect: function(packet){
 		var self= this;
-		console.log("MQTT \\ Disconnect");
+		if(mqtt_service_debug){
+			console.log("* MQTT \\ Disconnect");
+		}
 	},
-	eventOnError: () => {
+	eventOnError: function(){
 		var self= this;
-		console.log("MQTT \\ Error Occured");
+		if(mqtt_service_debug){
+			console.log("* MQTT \\ Error Occured");
+		}
 	},
-	eventOnConnect: function(self){
-		var self= this;
-		console.log("MQTT \\ Connected");
+	eventOnConnect: function(){
+		// var self= this;
+		// console.log("MQTT \\ Check", mqtt_service_debug);
+		if(mqtt_service_debug){
+			console.log("* MQTT \\ Connected");
+		}
 		// console.log('abc', this);
 
-		mqtt_client.subscribe('lb/#', (err) => {
-			if(err){
-		  		console.log('MQTT \\ Subscribe \\ something wrong: ', err);
-			}
+		let offices= dotProp.get(mqtt_service_data.objects, 'objects.offices', []);
+
+		_.each(offices, function(ov, ok){
+			//# Listen toilets
+			let toilets= dotProp.get(mqtt_service_data.objects, 'objects.toilets.'+ok+'', []);
+			_.each(toilets, function(tltv,tltk){
+				let t_topic_door_status= dotProp.get(mqtt_service_data.objects, 'schema.object_types.toilet.topics.door_status', '');
+				if(!_.isEqual(t_topic_door_status, '')){
+					t_topic_door_status= t_topic_door_status.replace('{office_id}', ok);
+					t_topic_door_status= t_topic_door_status.replace('{toilet_id}', tltv);
+					if(mqtt_service_debug){
+						console.log('--> MQTT \\ Subscribe: '+t_topic_door_status);
+					}
+					mqtt_client.subscribe(t_topic_door_status, (err) => {
+						if(err){
+					  	console.log('!! MQTT \\ Subscribe \\ Error: ', err);
+						}
+					});
+				}
+			});
 		});
 
 		// mqtt_client.subscribe('lb/toilet-tengah/door-status', (err) => {

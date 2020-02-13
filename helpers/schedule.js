@@ -21,12 +21,14 @@ module.exports= function(options){
 			let offices= dotProp.get(self.data.objects, 'objects.offices', []);
 
 			//# Check toilet availability
-			let topic_format= dotProp.get(self.data.objects, 'schema.toilets.topics.get_data','');
+			let topic_format= dotProp.get(self.data.objects, 'schema.object_types.toilet.topics.get_data','');
 			if(!_.isEqual(topic_format, '')){
 				_.each(offices, function(ov, ok){
 					var e_topic_format= topic_format.replace('{office_id}',ok);
 					self.data.schedules.push(schedule.scheduleJob('* * * * *', function(){
-		  			console.log('Schedule (each-minutes) \\ Check MQTT Service (check toilet availability - '+ok+')');
+						if(self.debug){
+							console.log('Schedule (each-minutes) \\ Check MQTT Service (check toilet availability - '+ok+')');
+						}
 					  self.data.mqtt_service.client.publish(e_topic_format, 'getData');
 					}));
 				});

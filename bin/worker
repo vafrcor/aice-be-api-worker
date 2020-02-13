@@ -1,26 +1,57 @@
+const appRoot = require('app-root-path');
+try{
+	var load_env= require('dotenv').config({ path: appRoot+'/.env' });
+	if (load_env.error) {
+	  throw result.error;
+	}
+}catch(e){
+	console.log('ENV File loader \\ Error: ', e);
+}
+
+// console.log('ENV files: ', process.env);
+
 const fs = require('fs');
 const dotProp = require('dot-prop');
-const appRoot = require('app-root-path');
-// const schedule = require('node-schedule');
+
 const objectConfig= require(appRoot+"/helpers/object_config.js");
 let objectJSON= objectConfig.read('/configs/objects.json');
 let database= objectConfig.read('/configs/database.json');
 
-// console.log('Object Config:', objectJSON);
-// console.log('Test: ', dotProp.get(objectJSON, 'schema.toilets'));
-// console.log('Config DB', database);
+var app_debug= process.env.APP_DEBUG || 'false';
+
+app_debug = app_debug == 'true'? true : false;
+console.log('APP DEBUG: '+app_debug);
+
+//# Load MQTT custom subscriber
+let sub_mqtt_options={
+	debug: app_debug,
+	objects: objectJSON
+};
+const mqtt_subscriber=require(appRoot+'/helpers/mqtt_subscriber.js')(sub_mqtt_options);
 
 //# Run MQTT service  
 let mqtt_options={
-	'debug': true,
-	'connection': database.mqtt
+	debug: app_debug,
+	connection: database.mqtt,
+	objects: objectJSON,
+	event_subscriber: mqtt_subscriber
 };
 const mqtt_service=require(appRoot+'/helpers/mqtt_server.js')(mqtt_options);
 
 //# Run Scheduler service
 let schedule_options={
-	debug: true,
+	debug: app_debug,
 	objects: objectJSON,
 	mqtt_service: mqtt_service
 };
 const schedule_service=require(appRoot+'/helpers/schedule.js')(schedule_options);
+
+//# Test purpose only
+test_signal_toilet_status=process.env.TEST_SIGNAL_TOILET_DOOR_STATUS || 'false';
+if(test_signal_toilet_status == 'true'){
+	setTimeout(function(){
+		console.log('Test \\ MQTT Publish: lb/toilet-tengah/door-status');
+		// lorem ipsum dolor sit amet
+		mqtt_service.client.publish('lb/toilet-tengah/door-status', '1');
+	}, 5000);
+}

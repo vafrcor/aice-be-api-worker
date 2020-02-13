@@ -8,8 +8,8 @@
 				"name":"Toilet",
 				"topics":{
 					"get_data": "{office_id}/#",
-					"door_status": "{office_id}/{toilet_id}/door-status",
-					"client_refresh": "{office_id}/{toilet_id}/door-status/client"
+					"door_status": "{office_id}/toilet/{toilet_id}/door-status",
+					"client_refresh": "{office_id}/toilet/{toilet_id}/door-status/client"
 				}
 			}
 		}
@@ -24,7 +24,7 @@
 					"coordinates":"-7.966934,112.610933"
 				}
 			},
-			"tbr":{
+			"tambora":{
 				"name":"Tambora",
 				"location":{
 					"city":"Malang",
@@ -39,12 +39,6 @@
 				"toilet-kamar",
 				"toilet-mushola",
 				"toilet-atas"
-			],
-			"tbr":[
-				"toilet-tengah",
-				"toilet-belakang",
-				"toilet-atas-1",
-				"toilet-atas-2"
 			]
 		}
 	}

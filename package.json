@@ -4,8 +4,8 @@
   "private": true,
   "description": "AICE Backend - NodeJS Service",
   "scripts": {
-    "start": "node ./bin/www",
-    "worker": "node ./bin/worker",
+    "api": "nodemon ./bin/www",
+    "worker": "nodemon ./bin/worker",
     "test": "echo \"Error: no test specified\" && exit 1",
     "run-with-debug": "DEBUG=alterra-aice-be-node:* npm start"
   },
@@ -25,6 +25,7 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dot-prop": "^5.2.0",
+    "dotenv": "^8.2.0",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
