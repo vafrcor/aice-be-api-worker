@@ -69,9 +69,12 @@ var mqtt_subscriber= {
 		var self= this;
 		let marker_path= self.data.object_type_marker_path[object_type].replace('{office_id}', office_id).replace('{object_type_id}', ot_id);
 		if(self.debug){
-			console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] --> Removing: '+marker_path);
+			console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] --> Check Mark Path: '+marker_path);
 		}
 		if(fs.existsSync(appRoot+marker_path)){
+			if(self.debug){
+				console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] --> Removing: '+marker_path);
+			}
 			fs.unlinkSync(appRoot+marker_path);
 		}
 	}
