@@ -3,6 +3,7 @@ const appRoot = require('app-root-path');
 const schedule = require('node-schedule');
 const dotProp = require('dot-prop');
 const _ = require('lodash');
+var moment = require('moment');
 
 module.exports= function(options){
 	var scheduler= {
@@ -30,7 +31,7 @@ module.exports= function(options){
 					var e_toilet_topic_format= toilet_topic_format.replace('{office_id}',ok);
 					self.data.schedules.push(schedule.scheduleJob('*/2 * * * *', function(){
 						if(self.debug){
-							console.log('* Schedule (each-2-minutes) \\ Check MQTT Service (check toilet availability - '+ok+')');
+							console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] * Schedule (each-2-minutes) \\ Check MQTT Service (check toilet availability - '+ok+')');
 						}
 
 						//# publish getData for each object-type
@@ -41,11 +42,13 @@ module.exports= function(options){
 					  let toilets= dotProp.get(self.data.objects, 'objects.toilets.'+ok+'', []);
 					  let c_time = new Date();
 					  _.each(toilets, function(object_type_id){
-					  	let e_marker_path= marker_path.replace('{object_type_id}', object_type_id)+'.mark';
+					  	let e_marker_path= marker_path.replace('{object_type_id}', object_type_id);
+					  	// +'.mark';
 					  	
 					  	// touch marker file
 							if(!fs.existsSync(appRoot+e_marker_path)){
 								let mark_content={
+									created_at: moment().format('YYYY-MM-DD hh:mm:ss.SSS'),
 									office_id: ok,
 									object_type_id: object_type_id,
 									object_type: 'toilet',
@@ -54,7 +57,7 @@ module.exports= function(options){
 								fs.writeFileSync(appRoot+e_marker_path, JSON.stringify(mark_content), {'encoding': 'utf-8', 'flag': 'w'});
 							}
 					  	if(self.debug){
-								console.log('--> set marker for toilet availability (unknown-state)  - '+ok+'-'+object_type_id+')');
+								console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] --> set marker for toilet availability (unknown-state)  - '+ok+'-'+object_type_id+')');
 							}
 					  });
 					}));
@@ -71,12 +74,12 @@ module.exports= function(options){
 				}
 				if(marker_dir != ''){
 					var marker_files = fs.readdirSync(appRoot+marker_dir);
-					if(self.debug){
-						console.log('--> Marker Files', {
-							'marker_files': marker_files
-						});
-					}
-					
+					// if(self.debug){
+					// 	console.log('--> Marker Files', {
+					// 		'marker_files': marker_files
+					// 	});
+					// }
+
 					_.forEach(marker_files, function(file){
 						let length=file.length;
 					  let ext=file.slice((length - 5), length);

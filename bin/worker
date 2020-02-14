@@ -1,4 +1,6 @@
 const appRoot = require('app-root-path');
+var moment = require('moment');
+
 try{
 	var load_env= require('dotenv').config({ path: appRoot+'/.env' });
 	if (load_env.error) {
@@ -23,7 +25,7 @@ var app_debug= process.env.APP_DEBUG || 'false';
 var app_env= process.env.APP_ENV || 'local';
 
 app_debug = app_debug == 'true'? true : false;
-console.log('APP DEBUG: '+app_debug);
+console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] APP DEBUG: '+app_debug);
 
 //# Load MQTT custom subscriber
 let sub_mqtt_options={
@@ -56,7 +58,7 @@ const schedule_service=require(appRoot+'/helpers/schedule.js')(schedule_options)
 test_signal_toilet_status=process.env.APP_TEST_SIGNAL_TOILET_DOOR_STATUS || 'false';
 if((test_signal_toilet_status == 'true') && _.includes(['local','development','staging'],app_env)) {
 	setInterval(function(){
-		console.log('Test \\ MQTT Publish: lb/toilet-tengah/door-status');
+		console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] Test \\ MQTT Publish: lb/toilet-tengah/door-status');
 		// lorem ipsum dolor sit amet
 		mqtt_service.client.publish('lb/toilet-tengah/door-status', _.random(0,1).toString());
 	}, 5000);

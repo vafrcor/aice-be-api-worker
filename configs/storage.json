@@ -7,9 +7,9 @@
 	  },
 	  "marker_path": {
 	  	"base": "/storage/app/object-types-marker/",
-	    "toilet": "/storage/app/object-types-marker/{office_id}-toilet-{object_type_id}",
-	    "meeting_room": "/storage/app/object-types-marker/{office_id}-meeting-room-{object_type_id}",
-	    "parking_lot": "/storage/app/object-types-marker/{office_id}-parking-lot-{object_type_id}"
+	    "toilet": "/storage/app/object-types-marker/{office_id}-toilet-{object_type_id}.mark",
+	    "meeting_room": "/storage/app/object-types-marker/{office_id}-meeting-room-{object_type_id}.mark",
+	    "parking_lot": "/storage/app/object-types-marker/{office_id}-parking-lot-{object_type_id}.mark"
 	  }
 	}
 }

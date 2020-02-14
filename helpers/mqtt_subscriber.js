@@ -3,6 +3,7 @@ const dotProp = require('dot-prop');
 const fs= require('fs');
 const _ = require('lodash');
 const objectConfig= require(appRoot+"/helpers/object_config.js");
+var moment = require('moment');
 
 var mqtt_subscriber= {
 	data: {},
@@ -20,7 +21,7 @@ var mqtt_subscriber= {
 	processMessage: function(topic, message){
 		var self=this;
 		if(self.debug){
-			console.log('--> MQTT Process Message  \\ Message Received ('+topic+'): ', message.toString());
+			console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] --> MQTT Process Message  \\ Message Received ('+topic+'): ', message.toString());
 		}
 		let topic_split= topic.split('/');
 		let office_id=topic_split[dotProp.get(self.data.object,'schema.object_types.meta.index.office_id', 0)];
@@ -66,11 +67,12 @@ var mqtt_subscriber= {
 	},
 	removeCheckingMarkerFile: function(object_type, office_id, ot_id, status){
 		var self= this;
-		let marker_path= self.data.object_type_marker_path[object_type].replace('{office_id}', office_id);
-		marker_path.replace('{object_type_id}', ot_id);
-		marker_path= marker_path+'.mark';
+		let marker_path= self.data.object_type_marker_path[object_type].replace('{office_id}', office_id).replace('{object_type_id}', ot_id);
+		if(self.debug){
+			console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] --> Removing: '+marker_path);
+		}
 		if(fs.existsSync(appRoot+marker_path)){
-			 fs.unlinkSync(filePath);
+			fs.unlinkSync(appRoot+marker_path);
 		}
 	}
 };

@@ -1,6 +1,7 @@
 const mqtt = require('mqtt');
 const dotProp = require('dot-prop');
 const _ = require('lodash');
+var moment = require('moment');
 
 var mqtt_client= null;
 var mqtt_service_data= {};
@@ -19,7 +20,7 @@ var mqtt_service= {
 		mqtt_service_subscriber= options.event_subscriber || null;
 		let connect_url= 'ws://'+options.connection.host+':'+options.connection.port+''+options.connection.uri_segment_prefix;
 		if(mqtt_service_debug){
-			console.log('* MQTT \\ URL: '+connect_url);
+			console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] * MQTT \\ URL: '+connect_url);
 		}
 		
 		mqtt_client = mqtt.connect(connect_url);
@@ -35,33 +36,33 @@ var mqtt_service= {
 	eventOnMessage: function(topic, message){
 		// var self= this;
 		// if(mqtt_service_debug){
-			console.log('* MQTT \\ Message Received ('+topic+'): ', message.toString());
+			console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] * MQTT \\ Message Received ('+topic+'): ', message.toString());
 		// }
 		mqtt_service_subscriber.processMessage(topic, message);
 	},
 	eventOnOffline: function(){
 		var self= this;
 		if(mqtt_service_debug){
-			console.log("* MQTT \\ Offline");
+			console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] * MQTT \\ Offline');
 		}
 	},
 	eventOnDisconnect: function(packet){
 		var self= this;
 		if(mqtt_service_debug){
-			console.log("* MQTT \\ Disconnect");
+			console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] * MQTT \\ Disconnect');
 		}
 	},
 	eventOnError: function(){
 		var self= this;
 		if(mqtt_service_debug){
-			console.log("* MQTT \\ Error Occured");
+			console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] * MQTT \\ Error Occured');
 		}
 	},
 	eventOnConnect: function(){
 		// var self= this;
 		// console.log("MQTT \\ Check", mqtt_service_debug);
 		if(mqtt_service_debug){
-			console.log("* MQTT \\ Connected");
+			console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+']  MQTT \\ Connected');
 		}
 		// console.log('abc', this);
 
@@ -76,11 +77,11 @@ var mqtt_service= {
 					t_topic_door_status= t_topic_door_status.replace('{office_id}', ok);
 					t_topic_door_status= t_topic_door_status.replace('{toilet_id}', tltv);
 					if(mqtt_service_debug){
-						console.log('--> MQTT \\ Subscribe: '+t_topic_door_status);
+						console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] --> MQTT \\ Subscribe: '+t_topic_door_status);
 					}
 					mqtt_client.subscribe(t_topic_door_status, (err) => {
 						if(err){
-					  	console.log('!! MQTT \\ Subscribe \\ Error: ', err);
+					  	console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] !! MQTT \\ Subscribe \\ Error: ', err);
 						}
 					});
 				}
