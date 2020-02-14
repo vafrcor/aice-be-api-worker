@@ -8,15 +8,14 @@ var mqtt_subscriber= {
 	data: {},
 	init: function(options){
 		var self=this;	
-		this.debug= options.debug || false;
-		this.data={
+		self.debug= options.debug || false;
+		self.data={
 			objects: options.objects || {},
-			object_status_path: {
-				toilet: '/storage/app/status/toilet.json',
-				meeting_room: '/storage/app/status/meeting-room.json',
-				parking_lot: '/storage/app/status/parking-lot.json'
-			}
+			storage: options.storage || {},
+			object_status_path: {} 
 		}
+		self.data.object_status_path= dotProp.get(this.data.storage, 'object_types.status_path', {});
+		self.data.object_type_marker_path=dotProp.get(self.data.storage, 'object_types.marker_path', {})
 	},
 	processMessage: function(topic, message){
 		var self=this;
@@ -42,10 +41,14 @@ var mqtt_subscriber= {
 			object_type= 'parking_lot';
 		}
 
+		//# update object type status
 		let is_door_status= topic.match(/door-status/g);
 		message= _.trim(message); 
 		if(_.isArray(is_door_status) && _.includes(['0','1'], message)){
+			//# update object-type-status
 			self.updateStatusFile(object_type, office_id, ot_id, message);
+			//# remove marker checker
+			self.removeCheckingMarkerFile(object_type, office_id, ot_id, message);
 		}
 	},
 	updateStatusFile: function(object_type, office_id, ot_id, status){
@@ -60,6 +63,14 @@ var mqtt_subscriber= {
 		}
 		data[office_id][ot_id]=parseInt(status);
 		objectConfig.write(fpath, data);
+	},
+	removeCheckingMarkerFile: function(object_type, office_id, ot_id, status){
+		var self= this;
+		let marker_path= self.data.object_type_marker_path[object_type].replace('{office_id}', office_id);
+		marker_path.replace('{object_type_id}', ot_id);
+		if(fs.existsSync(appRoot+marker_path)){
+			 fs.unlinkSync(filePath);
+		}
 	}
 };
 

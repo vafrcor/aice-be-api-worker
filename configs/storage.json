@@ -1,0 +1,14 @@
+{
+	"object_types":{
+		"status_path": {
+	    "toilet": "/storage/app/status/toilet.json",
+	    "meeting_room": "/storage/app/status/meeting-room.json",
+	    "parking_lot": "/storage/app/status/parking-lot.json"
+	  },
+	  "marker_path": {
+	    "toilet": "/storage/app/object-types-marker/{office_id}-toilet-{object_type_id}",
+	    "meeting_room": "/storage/app/object-types-marker/{office_id}-meeting-room-{object_type_id}",
+	    "parking_lot": "/storage/app/object-types-marker/{office_id}-parking-lot-{object_type_id}"
+	  }
+	}
+}
