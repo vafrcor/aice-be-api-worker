@@ -44,7 +44,7 @@ var mqtt_subscriber= {
 		//# update object type status
 		let is_door_status= topic.match(/door-status/g);
 		message= _.trim(message); 
-		if(_.isArray(is_door_status) && _.includes(['0','1'], message)){
+		if(_.isArray(is_door_status) && _.includes(['0','1','-1'], message)){
 			//# update object-type-status
 			self.updateStatusFile(object_type, office_id, ot_id, message);
 			//# remove marker checker
@@ -68,6 +68,7 @@ var mqtt_subscriber= {
 		var self= this;
 		let marker_path= self.data.object_type_marker_path[object_type].replace('{office_id}', office_id);
 		marker_path.replace('{object_type_id}', ot_id);
+		marker_path= marker_path+'.mark';
 		if(fs.existsSync(appRoot+marker_path)){
 			 fs.unlinkSync(filePath);
 		}
