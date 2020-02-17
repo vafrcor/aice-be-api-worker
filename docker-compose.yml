@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  api:
+    build:
+      dockerfile: Dockerfile.api
+      context: ./
+    ports: 
+      - '3000:3000'
+    volumes:
+      - /app/node_modules
+      - ./:/app
+  worker:
+    build:
+      dockerfile: Dockerfile.worker
+      context: ./
+    volumes:
+      - /app/node_modules
+      - ./:/app
+    environment:
+      - APP_DEBUG=true
+      - APP_ENV=development
+      - APP_TEST_SIGNAL_TOILET_DOOR_STATUS=false
+  nginx:
+    build:
+      dockerfile: Dockerfile
+      context: ./docker/nginx
+    ports: 
+      - '5555:80'
+    depends_on:
+      - api

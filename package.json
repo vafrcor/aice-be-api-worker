@@ -4,9 +4,8 @@
   "private": true,
   "description": "AICE Backend - NodeJS Service",
   "scripts": {
-    "start": "node ./bin/worker",
-    "api": "node ./bin/www",
-    "worker": "nodemon ./bin/worker",
+    "api": "nodemon -L ./bin/www",
+    "worker": "nodemon -L ./bin/worker",
     "test": "echo \"Error: no test specified\" && exit 1",
     "run-with-debug": "DEBUG=alterra-aice-be-node:* npm start"
   },
