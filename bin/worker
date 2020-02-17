@@ -10,7 +10,7 @@ const _= require('lodash');
 try{
 	var load_env= require('dotenv').config({ path: appRoot+'/.env' });
 	if (load_env.error) {
-	  throw result.error;
+	  throw load_env.error;
 	}
 }catch(e){
 	console.log('ENV File loader \\ Error: ', e);
@@ -21,7 +21,7 @@ try{
 //# Load Helper files
 const objectConfig= require(appRoot+"/helpers/object_config.js");
 let objectJSON= objectConfig.read('/configs/objects.json');
-let database= objectConfig.read('/configs/database.json');
+let database= require(appRoot+'/keys/database.js');
 let storage= objectConfig.read('/configs/storage.json');
 
 //# Load variable

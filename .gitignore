@@ -108,4 +108,6 @@ dist/
 tmp/
 temp/
 
+# Docker 
+docker-compose.yml.dev
 # End of https://www.gitignore.io/api/node

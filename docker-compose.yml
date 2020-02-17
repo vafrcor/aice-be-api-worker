@@ -21,6 +21,8 @@ services:
       - APP_DEBUG=true
       - APP_ENV=development
       - APP_TEST_SIGNAL_TOILET_DOOR_STATUS=false
+      - DB_MQTT_HOST={$DB_MQTT_HOST}
+      - DB_MQTT_PORT={$DB_MQTT_PORT}
   nginx:
     build:
       dockerfile: Dockerfile
