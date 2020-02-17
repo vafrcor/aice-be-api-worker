@@ -1,9 +1,14 @@
+var app_debug= process.env.APP_DEBUG || 'false';
+const app_env= process.env.APP_ENV || 'local';
+app_debug = app_debug == 'true'? true : false;
+
 const fs= require('fs');
+var moment = require('moment');
 const appRoot = require('app-root-path');
 const schedule = require('node-schedule');
 const dotProp = require('dot-prop');
 const _ = require('lodash');
-var moment = require('moment');
+const clog = require(appRoot+"/helpers/console_logger.js")({ debug: app_debug, use_datetime_prefix: true });
 
 module.exports= function(options){
 	var scheduler= {
@@ -31,7 +36,7 @@ module.exports= function(options){
 					var e_toilet_topic_format= toilet_topic_format.replace('{office_id}',ok);
 					self.data.schedules.push(schedule.scheduleJob('*/2 * * * *', function(){
 						if(self.debug){
-							console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] * Schedule (each-2-minutes) \\ Check MQTT Service (check toilet availability - '+ok+')');
+							clog.stdout('notice', '* Schedule (each-2-minutes) \\ Check MQTT Service (check toilet availability - '+ok+')');
 						}
 
 						//# publish getData for each object-type
@@ -57,7 +62,7 @@ module.exports= function(options){
 								fs.writeFileSync(appRoot+e_marker_path, JSON.stringify(mark_content), {'encoding': 'utf-8', 'flag': 'w'});
 							}
 					  	if(self.debug){
-								console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] --> set marker for toilet availability (unknown-state)  - '+ok+'-'+object_type_id+')');
+								clog.stdout('notice', '--> set marker for toilet availability (unknown-state)  - '+ok+'-'+object_type_id+')');
 							}
 					  });
 					}));
@@ -68,17 +73,17 @@ module.exports= function(options){
 			self.data.schedules.push(schedule.scheduleJob('* * * * *', function(){
 				var marker_dir= dotProp.get(self.data.storage, 'object_types.marker_path.base', '');
 				if(self.debug){
-					console.log('* Schedule (each-minutes) \\ Validate Marker Status', {
+					clog.stdout('info', '* Schedule (each-minutes) \\ Validate Marker Status', {
 						'marker_dir': marker_dir
 					});
 				}
 				if(marker_dir != ''){
 					var marker_files = fs.readdirSync(appRoot+marker_dir);
-					// if(self.debug){
-					// 	console.log('--> Marker Files', {
-					// 		'marker_files': marker_files
-					// 	});
-					// }
+					if(self.debug){
+						// clog.stdout('notice', '--> Marker Files', {
+						// 	'marker_files': marker_files
+						// });
+					}
 
 					_.forEach(marker_files, function(file){
 						let length=file.length;
@@ -88,7 +93,7 @@ module.exports= function(options){
 					  	let mark_content= JSON.parse(fs.readFileSync(appRoot+marker_dir+'/'+file, 'utf-8'));
 					  	self.data.mqtt_service.client.publish(mark_content.door_status, '-1');
 					  	if(self.debug){
-								console.log('--> '+mark_content.object_type+': '+mark_content.office_id+'-'+mark_content.object_type_id+' (set inactive | -1)');
+								clog.stdout('notice', '--> '+mark_content.object_type+': '+mark_content.office_id+'-'+mark_content.object_type_id+' (set inactive | -1)');
 							}
 					  }
 					});

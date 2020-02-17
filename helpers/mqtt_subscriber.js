@@ -1,9 +1,13 @@
+var app_debug= process.env.APP_DEBUG || 'false';
+const app_env= process.env.APP_ENV || 'local';
+app_debug = app_debug == 'true'? true : false;
+
 const appRoot = require('app-root-path');
 const dotProp = require('dot-prop');
 const fs= require('fs');
 const _ = require('lodash');
 const objectConfig= require(appRoot+"/helpers/object_config.js");
-var moment = require('moment');
+const clog = require(appRoot+"/helpers/console_logger.js")({ debug: app_debug, use_datetime_prefix: true });
 
 var mqtt_subscriber= {
 	data: {},
@@ -21,7 +25,7 @@ var mqtt_subscriber= {
 	processMessage: function(topic, message){
 		var self=this;
 		if(self.debug){
-			console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] --> MQTT Process Message  \\ Message Received ('+topic+'): ', message.toString());
+			clog.stdout('notice', '--> MQTT Process Message  \\ Message Received ('+topic+'): ', message.toString());
 		}
 		let topic_split= topic.split('/');
 		let office_id=topic_split[dotProp.get(self.data.object,'schema.object_types.meta.index.office_id', 0)];
@@ -69,11 +73,11 @@ var mqtt_subscriber= {
 		var self= this;
 		let marker_path= self.data.object_type_marker_path[object_type].replace('{office_id}', office_id).replace('{object_type_id}', ot_id);
 		if(self.debug){
-			console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] --> Check Mark Path: '+marker_path);
+			clog.stdout('notice', '--> Check Mark Path: '+marker_path);
 		}
 		if(fs.existsSync(appRoot+marker_path)){
 			if(self.debug){
-				console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] --> Removing: '+marker_path);
+				clog.stdout('notice', '--> Removing: '+marker_path);
 			}
 			fs.unlinkSync(appRoot+marker_path);
 		}

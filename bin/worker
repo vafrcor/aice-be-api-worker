@@ -1,6 +1,12 @@
+//# Main package loader
 const appRoot = require('app-root-path');
 var moment = require('moment');
+const fs = require('fs');
+const dotProp = require('dot-prop');
+const _= require('lodash');
 
+
+//# Env Loader
 try{
 	var load_env= require('dotenv').config({ path: appRoot+'/.env' });
 	if (load_env.error) {
@@ -12,20 +18,20 @@ try{
 
 // console.log('ENV files: ', process.env);
 
-const fs = require('fs');
-const dotProp = require('dot-prop');
-const _= require('lodash');
-
+//# Load Helper files
 const objectConfig= require(appRoot+"/helpers/object_config.js");
 let objectJSON= objectConfig.read('/configs/objects.json');
 let database= objectConfig.read('/configs/database.json');
 let storage= objectConfig.read('/configs/storage.json');
 
+//# Load variable
 var app_debug= process.env.APP_DEBUG || 'false';
-var app_env= process.env.APP_ENV || 'local';
+const app_env= process.env.APP_ENV || 'local';
 
 app_debug = app_debug == 'true'? true : false;
-console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] APP DEBUG: '+app_debug);
+const clog = require(appRoot+"/helpers/console_logger.js")({ debug: app_debug, use_datetime_prefix: true });
+
+clog.stdout('info', 'APP DEBUG: '+app_debug);
 
 //# Load MQTT custom subscriber
 let sub_mqtt_options={
@@ -35,7 +41,7 @@ let sub_mqtt_options={
 };
 const mqtt_subscriber=require(appRoot+'/helpers/mqtt_subscriber.js')(sub_mqtt_options);
 
-//# Run MQTT service  
+// //# Run MQTT service  
 let mqtt_options={
 	debug: app_debug,
 	connection: database.mqtt,
@@ -58,7 +64,7 @@ const schedule_service=require(appRoot+'/helpers/schedule.js')(schedule_options)
 test_signal_toilet_status=process.env.APP_TEST_SIGNAL_TOILET_DOOR_STATUS || 'false';
 if((test_signal_toilet_status == 'true') && _.includes(['local','development','staging'],app_env)) {
 	setInterval(function(){
-		console.log('['+moment().format('YYYY-MM-DD hh:mm:ss.SSS')+'] Test \\ MQTT Publish: lb/toilet-tengah/door-status');
+		clog.stdout('info', '* MQTT Publish (TEST): lb/toilet-tengah/door-status');
 		// lorem ipsum dolor sit amet
 		mqtt_service.client.publish('lb/toilet-tengah/door-status', _.random(0,1).toString());
 	}, 5000);
