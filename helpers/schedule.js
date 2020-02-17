@@ -32,24 +32,27 @@ module.exports= function(options){
 			//# Check toilet availability
 			let toilet_topic_format= dotProp.get(self.data.objects, 'schema.object_types.toilet.topics.get_data','');
 			if(!_.isEqual(toilet_topic_format, '')){
-				_.each(offices, function(ov, ok){
-					var e_toilet_topic_format= toilet_topic_format.replace('{office_id}',ok);
-					self.data.schedules.push(schedule.scheduleJob('*/2 * * * *', function(){
+				self.data.schedules.push(schedule.scheduleJob('*/2 * * * *', function(){
+					_.each(offices, function(ov, ok){
 						if(self.debug){
 							clog.stdout('notice', '* Schedule (each-2-minutes) \\ Check MQTT Service (check toilet availability - '+ok+')');
 						}
-
-						//# publish getData for each object-type
-					  self.data.mqtt_service.client.publish(e_toilet_topic_format, 'getData');
-
+						let e_toilet_topic_format= toilet_topic_format.replace('{office_id}', ok);
+						// ###
 					  //# set a market as unknown status
 					  let marker_path= self.data.object_type_marker_path.toilet.replace('{office_id}', ok);
 					  let toilets= dotProp.get(self.data.objects, 'objects.toilets.'+ok+'', []);
 					  let c_time = new Date();
 					  _.each(toilets, function(object_type_id){
 					  	let e_marker_path= marker_path.replace('{object_type_id}', object_type_id);
-					  	// +'.mark';
-					  	
+							// +'.mark';
+					  	//# publish getData for each object-type
+					  	let eot_toilet_topic_format= e_toilet_topic_format.replace('{toilet_id}', object_type_id);
+					  	self.data.mqtt_service.client.publish(eot_toilet_topic_format, 'getData');
+					  	if(self.debug){
+								clog.stdout('notice', '--> Publish getData : '+eot_toilet_topic_format);
+							}
+
 					  	// touch marker file
 							if(!fs.existsSync(appRoot+e_marker_path)){
 								let mark_content={
@@ -62,11 +65,11 @@ module.exports= function(options){
 								fs.writeFileSync(appRoot+e_marker_path, JSON.stringify(mark_content), {'encoding': 'utf-8', 'flag': 'w'});
 							}
 					  	if(self.debug){
-								clog.stdout('notice', '--> set marker for toilet availability (unknown-state)  - '+ok+'-'+object_type_id+')');
+								clog.stdout('notice', '---> set marker for toilet availability (unknown-state)  - '+ok+'-'+object_type_id+')');
 							}
 					  });
-					}));
-				});
+					});
+				}));
 			}
 
 			//# Validate check-status marker and set offline

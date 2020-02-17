@@ -13,7 +13,7 @@
 			"toilet":{
 				"name":"Toilet",
 				"topics":{
-					"get_data": "{office_id}/#",
+					"get_data": "{office_id}/{toilet_id}/door-status/client",
 					"door_status": "{office_id}/{toilet_id}/door-status",
 					"client_refresh": "{office_id}/{toilet_id}/door-status/client"
 				}

@@ -28,9 +28,9 @@ var mqtt_service= {
 		}
 		
 		mqtt_client = mqtt.connect(connect_url, {
-			// keepalive: 0,
-			// clean: true,
-			// reconnectPeriod: 5
+			keepalive: 0,
+			clean: true,
+			reconnectPeriod: 1000
 		});
 	},
 	setEvents: function() {
