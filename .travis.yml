@@ -32,8 +32,8 @@ deploy:
   region: $AWS_BS_APP_REGION
   app: $AWS_BS_APP_NAME
   env: $AWS_BS_APP_ENVIRONMENT
-  bucket_name: AWS_S3_BUCKET
-  bucket_path: AWS_S3_BUCKET_PATH
+  bucket_name: $AWS_S3_BUCKET
+  bucket_path: $AWS_S3_BUCKET_PATH
   access_key_id: $AWS_ACCESS_KEY
   secret_access_key: 
     secure: "$AWS_SECRET_KEY"
