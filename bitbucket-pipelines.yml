@@ -45,7 +45,7 @@ pipelines:
                 APPLICATION_NAME: $AWS_BS_APP_NAME
                 ENVIRONMENT_NAME: $AWS_BS_APP_ENVIRONMENT
                 ZIP_FILE: $AWS_BS_APP_ZIP_FILENAME
-                S3_BUCKET: $AWS_S3_BUCKET
+                # S3_BUCKET: $AWS_S3_BUCKET
                 # VERSION_LABEL: $APPLICATION_NAME-$BITBUCKET_BUILD_NUMBER-$BITBUCKET_COMMIT:v.0.2 # Optional.
                 # DESCRIPTION: '<string>' # Optional.
                 WAIT: 'true'
