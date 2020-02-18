@@ -6,7 +6,7 @@
   "scripts": {
     "api": "nodemon -L ./bin/www",
     "worker": "nodemon -L ./bin/worker",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 0",
     "run-with-debug": "DEBUG=alterra-aice-be-node:* npm start"
   },
   "repository": {

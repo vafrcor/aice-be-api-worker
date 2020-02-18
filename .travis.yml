@@ -1,0 +1,39 @@
+sudo: required
+
+branches:
+  only:
+    - master
+
+services:
+  - docker
+
+before_install:
+  - docker build -t $DOCKER_HUB_USERNAME/$DOCKER_IMAGE_API -f .Dockerfile.worker .
+
+
+script:
+  - docker run -e CI=true $DOCKER_HUB_USERNAME/$DOCKER_IMAGE_API npm run test -- --coverage
+
+after_success:
+  - docker build -t $DOCKER_HUB_USERNAME/$DOCKER_IMAGE_API .
+  - docker build -t $DOCKER_HUB_USERNAME/$DOCKER_IMAGE_NGINX -f ./docker/nginx/Dockerfile ./docker/nginx
+  - docker build -t $DOCKER_HUB_USERNAME/$DOCKER_IMAGE_WORKER .
+  # Log in to the docker CLI
+  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+  - docker push $DOCKER_HUB_USERNAME/$DOCKER_IMAGE_API
+  - docker push $DOCKER_HUB_USERNAME/$DOCKER_IMAGE_NGINX
+  - docker push $DOCKER_HUB_USERNAME/$DOCKER_IMAGE_WORKER
+
+deploy:
+  edge: true
+  on: 
+    branch: master
+  provider: elasticbeanstalk
+  region: $AWS_BS_APP_REGION
+  app: $AWS_BS_APP_NAME
+  env: $AWS_BS_APP_ENVIRONMENT
+  bucket_name: AWS_S3_BUCKET
+  bucket_path: AWS_S3_BUCKET_PATH
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: 
+    secure: "$AWS_SECRET_KEY"
