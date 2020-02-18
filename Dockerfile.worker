@@ -7,4 +7,6 @@ RUN npm install
 
 COPY . .
 
+RUN cp .env.example .env
+
 CMD ["npm", "run", "worker"]
