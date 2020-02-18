@@ -66,6 +66,7 @@ if((test_signal_toilet_status == 'true') && _.includes(['local','development','s
 	setInterval(function(){
 		clog.stdout('info', '* MQTT Publish (TEST): lb/toilet-tengah/door-status');
 		// lorem ipsum dolor sit amet
-		mqtt_service.client.publish('lb/toilet-tengah/door-status', _.random(0,1).toString());
-	}, 5000);
+		// , {qos: 0}
+		mqtt_service.client.publish('lb/toilet-tengah/door-status', _.random(0,1).toString(), {qos: 1});
+	}, 10000);
 }

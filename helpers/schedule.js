@@ -48,7 +48,7 @@ module.exports= function(options){
 							// +'.mark';
 					  	//# publish getData for each object-type
 					  	let eot_toilet_topic_format= e_toilet_topic_format.replace('{toilet_id}', object_type_id);
-					  	self.data.mqtt_service.client.publish(eot_toilet_topic_format, 'getData');
+					  	self.data.mqtt_service.client.publish(eot_toilet_topic_format, 'getData', {qos: 1});
 					  	if(self.debug){
 								clog.stdout('notice', '--> Publish getData : '+eot_toilet_topic_format);
 							}
@@ -94,7 +94,7 @@ module.exports= function(options){
 					  let segment=file.slice(0, (length - 5));
 					  if(ext=='.mark'){
 					  	let mark_content= JSON.parse(fs.readFileSync(appRoot+marker_dir+'/'+file, 'utf-8'));
-					  	self.data.mqtt_service.client.publish(mark_content.door_status, '-1');
+					  	self.data.mqtt_service.client.publish(mark_content.door_status, '-1', {qos: 1});
 					  	if(self.debug){
 								clog.stdout('notice', '--> '+mark_content.object_type+': '+mark_content.office_id+'-'+mark_content.object_type_id+' (set inactive | -1)');
 							}

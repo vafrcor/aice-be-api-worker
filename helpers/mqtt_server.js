@@ -29,8 +29,9 @@ var mqtt_service= {
 		
 		mqtt_client = mqtt.connect(connect_url, {
 			keepalive: 0,
-			clean: true,
-			reconnectPeriod: 1000
+			clean: false,
+			reconnectPeriod: 500,
+			clientId: 'aice_be_mqttjs_' + Math.random().toString(16).substr(2, 8)
 		});
 	},
 	setEvents: function() {
@@ -87,7 +88,8 @@ var mqtt_service= {
 					if(mqtt_service_debug){
 						clog.stdout('notice', '--> MQTT \\ Subscribe: '+t_topic_door_status);
 					}
-					mqtt_client.subscribe(t_topic_door_status, (err) => {
+					// mqtt_client.subscribe(t_topic_door_status, {qos: 0},(err) => {
+					mqtt_client.subscribe(t_topic_door_status, {qos: 1},(err) => {
 						if(err){
 					  		clog.stdout('error', '!! MQTT \\ Subscribe \\ Error: ', err);
 						}
