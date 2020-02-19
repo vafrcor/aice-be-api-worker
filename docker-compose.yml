@@ -23,6 +23,7 @@ services:
       - APP_TEST_SIGNAL_TOILET_DOOR_STATUS=false
       - DB_MQTT_HOST={$DB_MQTT_HOST}
       - DB_MQTT_PORT={$DB_MQTT_PORT}
+      - DB_MQTT_PROTOCOL={$DB_MQTT_PROTOCOL}
   nginx:
     build:
       dockerfile: Dockerfile

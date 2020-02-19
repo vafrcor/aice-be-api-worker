@@ -44,7 +44,7 @@ const mqtt_subscriber=require(appRoot+'/helpers/mqtt_subscriber.js')(sub_mqtt_op
 // //# Run MQTT service  
 let mqtt_options={
 	debug: app_debug,
-	connection: database.mqtt,
+	connection: database.object_broker,
 	objects: objectJSON,
 	event_subscriber: mqtt_subscriber,
 	storage: storage

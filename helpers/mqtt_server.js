@@ -22,12 +22,16 @@ var mqtt_service= {
 		mqtt_service_debug= options.debug || false; 
 		//console.log('MQTT Service \\ Debug : ', mqtt_service_debug);
 		mqtt_service_subscriber= options.event_subscriber || null;
-		let connect_url= 'ws://'+options.connection.host+':'+options.connection.port+''+options.connection.uri_segment_prefix;
+		// let connect_url= 'ws://'+options.connection.host+':'+options.connection.port+''+options.connection.uri_segment_prefix;
+		// let connect_url= 'mqtt://'+options.connection.host;
+		// let connect_url= 'tcp://'+options.connection.host+':1883';
+		let conn_protocol= options.connection.default_protocol;
+		let conn_url= options.connection.protocols[conn_protocol].url;
 		if(mqtt_service_debug){
-			clog.stdout('info', '* MQTT \\ URL: '+connect_url);
+			clog.stdout('info', '* MQTT (protocol: '+conn_protocol+') \\ URL: '+conn_url);
 		}
 		
-		mqtt_client = mqtt.connect(connect_url, {
+		mqtt_client = mqtt.connect(conn_url, {
 			keepalive: 0,
 			clean: false,
 			reconnectPeriod: 500,
